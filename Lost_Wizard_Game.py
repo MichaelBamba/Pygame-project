@@ -51,6 +51,8 @@ ghost_image = pygame.image.load('img/ghost.gif').convert_alpha()
 ghost_image = pygame.transform.scale(ghost_image, (120, 120))
 dragon_image = pygame.image.load('img/Dragon.png').convert_alpha()
 dragon_image = pygame.transform.scale(dragon_image, (120, 120))
+hero_image_right = pygame.image.load('img/hero-right-facing.png').convert_alpha()
+hero_image_right = pygame.transform.scale(hero_image_right, (90, 90))
 font_name = pygame.font.match_font('arial')
 def draw_text(surf, text, size, x, y):
     font = pygame.font.Font(font_name, size)
@@ -102,8 +104,10 @@ class Char(pygame.sprite.Sprite):
         if pressed_keys[K_DOWN] or pressed_keys[K_s]:
             self.rect.move_ip(0, self.speed)
         if pressed_keys[K_LEFT] or pressed_keys[K_a]:
+            self.image = hero_image
             self.rect.move_ip(-(self.speed), 0)
         if pressed_keys[K_RIGHT] or pressed_keys[K_d]:
+            self.image = hero_image_right
             self.rect.move_ip(self.speed, 0)
         if pressed_keys[K_SPACE]:
             self.shoot()
