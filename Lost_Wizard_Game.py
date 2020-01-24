@@ -1,6 +1,10 @@
 import pygame
 import random
 import pygame.sprite as sprite
+<<<<<<< HEAD
+=======
+import sys
+>>>>>>> 1fde8bb7ab6fcf71492072200ff063972ca15cca
 
 from pygame.locals import (
     K_UP,
@@ -23,10 +27,9 @@ SCREEN_HEIGHT = 600
 pygame.init()
 
 
-
 pygame.display.set_caption("Lost Wizard")
 screen = pygame.display.set_mode([800, 600])
-white = (255, 255, 255)
+WHITE = (255, 255, 255)
 clock = pygame.time.Clock()
 background = pygame.image.load('img/placeholder-bg.png')
 background = pygame.transform.scale(background, (800, 600))
@@ -48,13 +51,22 @@ ghost_image = pygame.image.load('img/ghost.gif').convert_alpha()
 ghost_image = pygame.transform.scale(ghost_image, (120, 120))
 dragon_image = pygame.image.load('img/Dragon.png').convert_alpha()
 dragon_image = pygame.transform.scale(dragon_image, (120, 120))
+<<<<<<< HEAD
 font_name = pygame.font.match_font('arial')
+=======
+hero_image_right = pygame.image.load('img/hero-right-facing.png').convert_alpha()
+hero_image_right = pygame.transform.scale(hero_image_right, (90, 90))
+font_name = pygame.font.match_font('Helvetica')
+
+
+>>>>>>> 1fde8bb7ab6fcf71492072200ff063972ca15cca
 def draw_text(surf, text, size, x, y):
     font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, white)
+    text_surface = font.render(text, True, WHITE)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -89,11 +101,9 @@ class Char(pygame.sprite.Sprite):
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
             bullets.add(Bullet(self.rect.centerx, self.rect.top))
-        # sprites.add(Bullet(self.rect.centerx, self.rect.top))
-        # bullets.add(Bullet(self.rect.centerx, self.rect.top))
+       
         shots_out.append("pew")
     def update(self, pressed_keys, pos):
-            # self.rect.move_ip(pos)
         if pressed_keys[K_UP] or pressed_keys[K_w]:
             self.rect.move_ip(0, -(self.speed))
         if pressed_keys[K_DOWN] or pressed_keys[K_s]:
@@ -181,7 +191,7 @@ def show_go_screen():
     draw_text(screen, "LOST WIZARD", 80, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4)
     draw_text(screen, "WASD to move, hold SPACE to fire.", 50,
               SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    draw_text(screen, "Press any key to begin", 25, SCREEN_WIDTH/ 2, SCREEN_HEIGHT * 3 / 4)
+    draw_text(screen, "--Press any key to start--", 25, SCREEN_WIDTH/ 2, SCREEN_HEIGHT * 3 / 4)
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -209,7 +219,12 @@ def redrawGameWindow():
     enemy_sprites.update()
     pygame.display.update()
     player.update(pressed_keys, pos)
+<<<<<<< HEAD
     
+=======
+# pygame.mixer.music.load()
+# pygame.mixer.music.play(-1)
+>>>>>>> 1fde8bb7ab6fcf71492072200ff063972ca15cca
 level = 1
 difficulty = 1
 score = 0
@@ -227,8 +242,11 @@ while running:
         bullets = pygame.sprite.Group()
         player = Char(hero_image)
         sprites.add(player)
+<<<<<<< HEAD
         for i in range(8):
             newMonster()
+=======
+>>>>>>> 1fde8bb7ab6fcf71492072200ff063972ca15cca
         score = 0
     
     clock.tick(60)
