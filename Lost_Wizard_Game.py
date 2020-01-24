@@ -2,7 +2,7 @@ import pygame
 import random
 import pygame.sprite as sprite
 import sys
-
+from os import path
 from pygame.locals import (
     K_UP,
     K_DOWN,
@@ -18,13 +18,16 @@ from pygame.locals import (
     K_SPACE
 
 )
+
 FPS = 60
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 pygame.init()
 
+img_dir = path.join(path.dirname(__file__), 'img')
+snd_dir = path.join(path.dirname(__file__), 'snd')
 
-pygame.display.set_caption("Lost Wizard")
+pygame.display.set_caption("Wizard in the woods")
 screen = pygame.display.set_mode([800, 600])
 WHITE = (255, 255, 255)
 clock = pygame.time.Clock()
@@ -54,7 +57,6 @@ hero_image_right = pygame.image.load('img/hero-right-facing.png').convert_alpha(
 hero_image_right = pygame.transform.scale(hero_image_right, (90, 90))
 font_name = pygame.font.match_font('Helvetica')
 
-
 def draw_text(surf, text, size, x, y):
     font = pygame.font.Font(font_name, size)
     text_surface = font.render(text, True, WHITE)
@@ -68,6 +70,7 @@ class Bullet(pygame.sprite.Sprite):
         self.image = pygame.Surface((10, 20))
         self.image = shot_image
         self.rect = self.image.get_rect()
+        self.radius = 12
         self.rect.bottom = y
         self.rect.centerx = x
         self.speedy = -15
@@ -84,6 +87,7 @@ class Char(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = self.image.get_rect()
+        self.radius = 15
         self.speed = 15
         self.x = 400
         self.y = 475
@@ -124,6 +128,7 @@ class Monster(pygame.sprite.Sprite):
     def __init__(self, image):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
+        self.radius = 15
         self.rect = self.image.get_rect()
         self.speedx = random.randint(-5, 7)
         self.speedy = random.randint(3,7)
@@ -193,7 +198,7 @@ def newMonster():
 
 def show_go_screen():
     screen.blit(background, background_rect)
-    draw_text(screen, "LOST WIZARD", 80, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4)
+    draw_text(screen, "Wizard in the woods", 80, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4)
     draw_text(screen, "WASD to move, hold SPACE to fire.", 50,
               SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     draw_text(screen, "--Press any key to start--", 25, SCREEN_WIDTH/ 2, SCREEN_HEIGHT * 3 / 4)
