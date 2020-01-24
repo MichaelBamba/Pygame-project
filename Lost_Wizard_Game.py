@@ -179,9 +179,9 @@ def newMonster():
 def show_go_screen():
     screen.blit(background, background_rect)
     draw_text(screen, "LOST WIZARD", 80, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4)
-    draw_text(screen, "A and D to move left and right, SPACE to fire.", 50,
+    draw_text(screen, "WASD to move, hold SPACE to fire.", 50,
               SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    draw_text(screen, "Press a key to begin", 18, SCREEN_WIDTH/ 2, SCREEN_HEIGHT * 3 / 4)
+    draw_text(screen, "Press any key to begin", 25, SCREEN_WIDTH/ 2, SCREEN_HEIGHT * 3 / 4)
     pygame.display.flip()
     waiting = True
     while waiting:
