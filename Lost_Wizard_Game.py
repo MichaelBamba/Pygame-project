@@ -31,6 +31,8 @@ clock = pygame.time.Clock()
 background = pygame.image.load('img/placeholder-bg.png')
 background = pygame.transform.scale(background, (800, 600))
 background_rect = background.get_rect()
+game_background = pygame.image.load('img/game-background.png').convert_alpha()
+game_background = pygame.transform.scale(game_background, (800, 600))
 bullets = pygame.sprite.Group()
 shot_image = pygame.image.load('img/shot.png').convert_alpha()
 blood1 = pygame.image.load('img/blood1.png').convert_alpha()
@@ -119,7 +121,7 @@ class Monster(pygame.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect()
         self.speedx = random.randint(-5, 7)
-        self.speedy = random.randint(0,8)
+        self.speedy = random.randint(1,8)
         self.x = random.randint(1, 800)
         self.y = random.randint(5, 30)
         self.rect.center = [self.x, self.y]
@@ -201,7 +203,7 @@ blood_group = pygame.sprite.Group()
 sprites.add(player)
 shots_out = []
 def redrawGameWindow():
-    # screen.blit(bg, (0,0))
+    screen.blit(game_background, (0,0))
     sprites.draw(screen)
     bullets.draw(screen)
     bullets.update()
