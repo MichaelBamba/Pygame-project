@@ -1,6 +1,7 @@
 import pygame
 import random
 import pygame.sprite as sprite
+import time
 
 from pygame.locals import (
     K_UP,
@@ -79,7 +80,7 @@ class Char(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = self.image.get_rect()
-        self.speed = 10
+        self.speed = 15
         self.x = 400
         self.y = 475
         self.last_shot = pygame.time.get_ticks()
@@ -121,13 +122,21 @@ class Monster(pygame.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect()
         self.speedx = random.randint(-5, 7)
-        self.speedy = random.randint(1,8)
-        self.x = random.randint(1, 800)
-        self.y = random.randint(5, 30)
+        self.speedy = random.randint(3,7)
+        self.x = random.randint(1, 800) 
+        self.y = random.randint(5  , 30)
         self.rect.center = [self.x, self.y]
 
     def update(self):
         self.rect.move_ip(self.speedx, self.speedy)
+        if (self.rect.x < 0) or (self.rect.right > 800):
+            self.speedx *= -1
+
+        self.rect.x = self.rect.x + self.speedx
+        # if self.rect.right >= SCREEN_WIDTH:
+        #     self.rect.move_ip(-(self.speedx), 0)
+        # if self.rect.left <= 0:
+        #     self.rect.move_ip(-(self.speedx),0)
         if self.rect.left > 800:
             self.kill()
 # class Monster(pygame.sprite.Sprite):
@@ -211,11 +220,11 @@ def redrawGameWindow():
     enemy_sprites.update()
     pygame.display.update()
     player.update(pressed_keys, pos)
-    
+
 level = 1
 difficulty = 1
 score = 0
-counter = 0
+counter = 12
 running = True
 start_screen = True
 while running:
@@ -229,10 +238,12 @@ while running:
         bullets = pygame.sprite.Group()
         player = Char(hero_image)
         sprites.add(player)
-        for i in range(8):
-            newMonster()
+        # for i in range(counter):
+        #     newMonster()
         score = 0
-    
+    # for i in range(1):
+    #         newMonster()
+    # newMonster()
     clock.tick(60)
     for event in pygame.event.get():
         pressed_keys = pygame.key.get_pressed()
@@ -245,6 +256,7 @@ while running:
 
     hits = pygame.sprite.groupcollide(enemy_sprites, bullets, True, True)
     for hit in hits:
+        counter = counter + 1
         score += 1
         random_roll = random.randint(1, 6)
         if random_roll > 3:
@@ -258,11 +270,12 @@ while running:
 
     hits = pygame.sprite.spritecollide(player, enemy_sprites, True, pygame.sprite.collide_circle)
     for hit in hits:
+        newMonster()
         player.life -= 1
         if player.life == 0:
             start_screen = True
 
-    random_roll = random.randint(1, 10)
+    random_roll = random.randint(1, 7)
     if random_roll <= difficulty:
         newMonster()      
     
@@ -272,7 +285,7 @@ while running:
 
     
 
-    counter += 1
+    # counter += 1
     redrawGameWindow()
     pygame.display.flip()
     
