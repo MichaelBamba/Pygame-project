@@ -119,7 +119,7 @@ class Monster(pygame.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect()
         self.speedx = random.randint(-5, 7)
-        self.speedy = random.randint(0,8)
+        self.speedy = random.randint(1,8)
         self.x = random.randint(1, 800)
         self.y = random.randint(5, 30)
         self.rect.center = [self.x, self.y]
