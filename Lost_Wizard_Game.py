@@ -126,7 +126,7 @@ class Monster(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.move_ip(self.speedx, self.speedy)
-        if self.rect.left > 600:
+        if self.rect.left > 800:
             self.kill()
 # class Monster(pygame.sprite.Sprite):
 #     def __init__(self, image):
