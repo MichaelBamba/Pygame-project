@@ -191,8 +191,10 @@ def newMonster():
         a = Monster(skeleton_image)
     if roll == 2:
         a = Monster(wizard_image)
+        a.radius = 10
     if roll == 3:
         a = Monster(ghost_image)
+        a.radius = 8
     sprites.add(a)
     enemy_sprites.add(a)
 
