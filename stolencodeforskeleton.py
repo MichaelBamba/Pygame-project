@@ -59,7 +59,7 @@ def draw_lives(surf, x, y, lives, img):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.scale(cynda.jpg, (50, 38))
+        self.image = pygame.transform.scale(wizard.jpg, (50, 38))
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.radius = 20
@@ -133,7 +133,7 @@ class Player(pygame.sprite.Sprite):
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image_orig = random.choice(meteor_images)
+        self.image_orig = self.image_orig('sans.jpg')
         self.image_orig.set_colorkey(BLACK)
         self.image = self.image_orig.copy()
         self.rect = self.image.get_rect()
@@ -240,49 +240,23 @@ def show_go_screen():
                 waiting = False
 
 # Load all game graphics
-background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
+background = pygame.image.load(path.join( "animatedtest.gif")).convert()
 background_rect = background.get_rect()
-player_img = pygame.image.load(path.join(img_dir, "playerShip1_orange.png")).convert()
+player_img = pygame.image.load(path.join( "wizard.jpg")).convert()
 player_mini_img = pygame.transform.scale(player_img, (25, 19))
 player_mini_img.set_colorkey(BLACK)
-bullet_img = pygame.image.load(path.join(img_dir, "laserRed16.png")).convert()
-meteor_images = []
-meteor_list = ['meteorBrown_big1.png', 'meteorBrown_med1.png', 'meteorBrown_med1.png',
-               'meteorBrown_med3.png', 'meteorBrown_small1.png', 'meteorBrown_small2.png',
-               'meteorBrown_tiny1.png']
-for img in meteor_list:
-    meteor_images.append(pygame.image.load(path.join(img_dir, img)).convert())
-explosion_anim = {}
-explosion_anim['lg'] = []
-explosion_anim['sm'] = []
-explosion_anim['player'] = []
-for i in range(9):
-    filename = 'regularExplosion0{}.png'.format(i)
-    img = pygame.image.load(path.join(img_dir, filename)).convert()
-    img.set_colorkey(BLACK)
-    img_lg = pygame.transform.scale(img, (75, 75))
-    explosion_anim['lg'].append(img_lg)
-    img_sm = pygame.transform.scale(img, (32, 32))
-    explosion_anim['sm'].append(img_sm)
-    filename = 'sonicExplosion0{}.png'.format(i)
-    img = pygame.image.load(path.join(img_dir, filename)).convert()
-    img.set_colorkey(BLACK)
-    explosion_anim['player'].append(img)
+bullet_img = pygame.image.load(path.join( "shot.jpg")).convert()
+
+
+
 powerup_images = {}
-powerup_images['shield'] = pygame.image.load(path.join(img_dir, 'shield_gold.png')).convert()
-powerup_images['gun'] = pygame.image.load(path.join(img_dir, 'bolt_gold.png')).convert()
+powerup_images['shield'] = pygame.image.load(path.join( 'kappa.png')).convert()
+powerup_images['gun'] = pygame.image.load(path.join( 'kappa.png')).convert()
 
 
-# Load all game sounds
-shoot_sound = pygame.mixer.Sound(path.join(snd_dir, 'pew.wav'))
-shield_sound = pygame.mixer.Sound(path.join(snd_dir, 'pow4.wav'))
-power_sound = pygame.mixer.Sound(path.join(snd_dir, 'pow5.wav'))
-expl_sounds = []
-for snd in ['expl3.wav', 'expl6.wav']:
-    expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, snd)))
-player_die_sound = pygame.mixer.Sound(path.join(snd_dir, 'rumble1.ogg'))
-pygame.mixer.music.load(path.join(snd_dir, 'tgfcoder-FrozenJam-SeamlessLoop.ogg'))
-pygame.mixer.music.set_volume(0.4)
+
+
+
 
 pygame.mixer.music.play(loops=-1)
 # Game loop

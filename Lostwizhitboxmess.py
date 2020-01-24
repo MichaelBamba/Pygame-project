@@ -1,15 +1,8 @@
 import pygame
 import random
 import pygame.sprite as sprite
-<<<<<<< HEAD
-=======
-import sys
-<<<<<<< HEAD
-from os import path
-=======
->>>>>>> 1fde8bb7ab6fcf71492072200ff063972ca15cca
+import time
 
->>>>>>> ceedb078fa52911ea32223d81f65610c1720d90f
 from pygame.locals import (
     K_UP,
     K_DOWN,
@@ -25,22 +18,22 @@ from pygame.locals import (
     K_SPACE
 
 )
-
 FPS = 60
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 pygame.init()
 
-img_dir = path.join(path.dirname(__file__), 'img')
-snd_dir = path.join(path.dirname(__file__), 'snd')
 
-pygame.display.set_caption("Wizard in the woods")
+
+pygame.display.set_caption("Lost Wizard")
 screen = pygame.display.set_mode([800, 600])
-WHITE = (255, 255, 255)
+white = (255, 255, 255)
 clock = pygame.time.Clock()
 background = pygame.image.load('img/placeholder-bg.png')
 background = pygame.transform.scale(background, (800, 600))
 background_rect = background.get_rect()
+game_background = pygame.image.load('img/game-background.png').convert_alpha()
+game_background = pygame.transform.scale(game_background, (800, 600))
 bullets = pygame.sprite.Group()
 shot_image = pygame.image.load('img/shot.png').convert_alpha()
 blood1 = pygame.image.load('img/blood1.png').convert_alpha()
@@ -58,32 +51,21 @@ ghost_image = pygame.image.load('img/ghost.gif').convert_alpha()
 ghost_image = pygame.transform.scale(ghost_image, (120, 120))
 dragon_image = pygame.image.load('img/Dragon.png').convert_alpha()
 dragon_image = pygame.transform.scale(dragon_image, (120, 120))
-<<<<<<< HEAD
-font_name = pygame.font.match_font('arial')
-=======
 hero_image_right = pygame.image.load('img/hero-right-facing.png').convert_alpha()
 hero_image_right = pygame.transform.scale(hero_image_right, (90, 90))
-font_name = pygame.font.match_font('Helvetica')
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 1fde8bb7ab6fcf71492072200ff063972ca15cca
->>>>>>> ceedb078fa52911ea32223d81f65610c1720d90f
+font_name = pygame.font.match_font('arial')
 def draw_text(surf, text, size, x, y):
     font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, WHITE)
+    text_surface = font.render(text, True, white)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
-
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((10, 20))
         self.image = shot_image
         self.rect = self.image.get_rect()
-        self.radius = 12
         self.rect.bottom = y
         self.rect.centerx = x
         self.speedy = -15
@@ -100,12 +82,10 @@ class Char(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = self.image.get_rect()
-<<<<<<< HEAD
         self.radius = 15
+        self.image.fill(white)
+    
         self.speed = 15
-=======
-        self.speed = 10
->>>>>>> ceedb078fa52911ea32223d81f65610c1720d90f
         self.x = 400
         self.y = 475
         self.last_shot = pygame.time.get_ticks()
@@ -117,16 +97,20 @@ class Char(pygame.sprite.Sprite):
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
             bullets.add(Bullet(self.rect.centerx, self.rect.top))
-       
+        # sprites.add(Bullet(self.rect.centerx, self.rect.top))
+        # bullets.add(Bullet(self.rect.centerx, self.rect.top))
         shots_out.append("pew")
     def update(self, pressed_keys, pos):
+            # self.rect.move_ip(pos)
         if pressed_keys[K_UP] or pressed_keys[K_w]:
             self.rect.move_ip(0, -(self.speed))
         if pressed_keys[K_DOWN] or pressed_keys[K_s]:
             self.rect.move_ip(0, self.speed)
         if pressed_keys[K_LEFT] or pressed_keys[K_a]:
+            self.image = hero_image
             self.rect.move_ip(-(self.speed), 0)
         if pressed_keys[K_RIGHT] or pressed_keys[K_d]:
+            self.image = hero_image_right
             self.rect.move_ip(self.speed, 0)
         if pressed_keys[K_SPACE]:
             self.shoot()
@@ -138,21 +122,29 @@ class Char(pygame.sprite.Sprite):
             self.rect.top = 0
         if self.rect.bottom >= SCREEN_HEIGHT:
             self.rect.bottom = SCREEN_HEIGHT
+        
 
 class Monster(pygame.sprite.Sprite):
     def __init__(self, image):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
-        self.radius = 15
         self.rect = self.image.get_rect()
         self.speedx = random.randint(-5, 7)
-        self.speedy = random.randint(0,8)
-        self.x = random.randint(1, 800)
-        self.y = random.randint(5, 30)
+        self.speedy = random.randint(3,7)
+        self.x = random.randint(1, 800) 
+        self.y = random.randint(5  , 30)
         self.rect.center = [self.x, self.y]
 
     def update(self):
         self.rect.move_ip(self.speedx, self.speedy)
+        if (self.rect.x < 0) or (self.rect.right > 800):
+            self.speedx *= -1
+
+        self.rect.x = self.rect.x + self.speedx
+        # if self.rect.right >= SCREEN_WIDTH:
+        #     self.rect.move_ip(-(self.speedx), 0)
+        # if self.rect.left <= 0:
+        #     self.rect.move_ip(-(self.speedx),0)
         if self.rect.left > 800:
             self.kill()
 # class Monster(pygame.sprite.Sprite):
@@ -205,10 +197,10 @@ def newMonster():
 
 def show_go_screen():
     screen.blit(background, background_rect)
-    draw_text(screen, "Wizard in the woods", 80, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4)
+    draw_text(screen, "LOST WIZARD", 80, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4)
     draw_text(screen, "WASD to move, hold SPACE to fire.", 50,
               SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    draw_text(screen, "--Press any key to start--", 25, SCREEN_WIDTH/ 2, SCREEN_HEIGHT * 3 / 4)
+    draw_text(screen, "Press any key to begin", 25, SCREEN_WIDTH/ 2, SCREEN_HEIGHT * 3 / 4)
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -228,7 +220,7 @@ blood_group = pygame.sprite.Group()
 sprites.add(player)
 shots_out = []
 def redrawGameWindow():
-    # screen.blit(bg, (0,0))
+    screen.blit(game_background, (0,0))
     sprites.draw(screen)
     bullets.draw(screen)
     bullets.update()
@@ -236,16 +228,11 @@ def redrawGameWindow():
     enemy_sprites.update()
     pygame.display.update()
     player.update(pressed_keys, pos)
-<<<<<<< HEAD
-    
-=======
-# pygame.mixer.music.load()
-# pygame.mixer.music.play(-1)
->>>>>>> 1fde8bb7ab6fcf71492072200ff063972ca15cca
+
 level = 1
 difficulty = 1
 score = 0
-counter = 0
+counter = 12
 running = True
 start_screen = True
 while running:
@@ -259,13 +246,12 @@ while running:
         bullets = pygame.sprite.Group()
         player = Char(hero_image)
         sprites.add(player)
-<<<<<<< HEAD
-        for i in range(8):
-            newMonster()
-=======
->>>>>>> 1fde8bb7ab6fcf71492072200ff063972ca15cca
+        # for i in range(counter):
+        #     newMonster()
         score = 0
-    
+    # for i in range(1):
+    #         newMonster()
+    # newMonster()
     clock.tick(60)
     for event in pygame.event.get():
         pressed_keys = pygame.key.get_pressed()
@@ -278,6 +264,7 @@ while running:
 
     hits = pygame.sprite.groupcollide(enemy_sprites, bullets, True, True)
     for hit in hits:
+        counter = counter + 1
         score += 1
         random_roll = random.randint(1, 6)
         if random_roll > 3:
@@ -291,11 +278,12 @@ while running:
 
     hits = pygame.sprite.spritecollide(player, enemy_sprites, True, pygame.sprite.collide_circle)
     for hit in hits:
+        newMonster()
         player.life -= 1
         if player.life == 0:
             start_screen = True
 
-    random_roll = random.randint(1, 10)
+    random_roll = random.randint(1, 7)
     if random_roll <= difficulty:
         newMonster()      
     
@@ -305,7 +293,7 @@ while running:
 
     
 
-    counter += 1
+    # counter += 1
     redrawGameWindow()
     pygame.display.flip()
     
