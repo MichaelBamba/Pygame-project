@@ -26,16 +26,20 @@ pygame.init()
 
 img_dir = path.join(path.dirname(__file__), 'img')
 snd_dir = path.join(path.dirname(__file__), 'snd')
-
+pygame.font.init()
 pygame.display.set_caption("Wizard in the woods")
 screen = pygame.display.set_mode([800, 600])
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 clock = pygame.time.Clock()
 background = pygame.image.load('img/placeholder-bg.png')
 background = pygame.transform.scale(background, (800, 600))
 background_rect = background.get_rect()
 game_background = pygame.image.load('img/game-background.png').convert_alpha()
 game_background = pygame.transform.scale(game_background, (800, 600))
+game_over_background = pygame.image.load('img/black_wizard.png').convert_alpha()
+game_over_background = pygame.transform.scale(game_over_background, (800, 600))
+game_over_background_rect = game_over_background.get_rect()
 bullets = pygame.sprite.Group()
 shot_image = pygame.image.load('img/shot.png').convert_alpha()
 blood1 = pygame.image.load('img/blood1.png').convert_alpha()
@@ -55,10 +59,13 @@ dragon_image = pygame.image.load('img/Dragon.png').convert_alpha()
 dragon_image = pygame.transform.scale(dragon_image, (120, 120))
 hero_image_right = pygame.image.load('img/hero-right-facing.png').convert_alpha()
 hero_image_right = pygame.transform.scale(hero_image_right, (70, 70))
-font_name = pygame.font.match_font('Helvetica')
 
-def draw_text(surf, text, size, x, y):
-    font = pygame.font.Font(font_name, size)
+font_name = pygame.font.SysFont('arialblackttf', 20)
+title_font = pygame.font.SysFont('papyrusttc', 96)
+
+# print(pygame.font.get_fonts())
+def draw_text(name, surf, text, size, x, y):
+    font = name
     text_surface = font.render(text, True, WHITE)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
@@ -73,7 +80,7 @@ class Bullet(pygame.sprite.Sprite):
         self.radius = 9
         self.rect.bottom = y
         self.rect.centerx = x
-        self.speedy = -15
+        self.speedy = -17
     def update(self):
         self.rect.y += self.speedy
         if self.rect.bottom < 0:
@@ -87,7 +94,7 @@ class Char(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = self.image.get_rect()
-        self.radius = 15
+        self.radius = 20
         self.speed = 15
         self.x = 400
         self.y = 475
@@ -100,7 +107,6 @@ class Char(pygame.sprite.Sprite):
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
             bullets.add(Bullet(self.rect.centerx, self.rect.top))
-       
         shots_out.append("pew")
     def update(self, pressed_keys, pos):
         if pressed_keys[K_UP] or pressed_keys[K_w]:
@@ -140,27 +146,9 @@ class Monster(pygame.sprite.Sprite):
         self.rect.move_ip(self.speedx, self.speedy)
         if (self.rect.x < 0) or (self.rect.right > 800):
             self.speedx *= -1
-
         self.rect.x = self.rect.x + self.speedx
-        # if self.rect.right >= SCREEN_WIDTH:
-        #     self.rect.move_ip(-(self.speedx), 0)
-        # if self.rect.left <= 0:
-        #     self.rect.move_ip(-(self.speedx),0)
         if self.rect.left > 800:
             self.kill()
-# class Monster(pygame.sprite.Sprite):
-#     def __init__(self, image):
-#         pygame.sprite.Sprite.__init__(self)
-#         self.image = image
-#         self.rect = self.image.get_rect()
-#         self.speed = random.randint(1, 7)
-#         self.x = random.randint(1, 800)
-#         self.y = random.randint(0, 30)
-#         self.rect.center = [self.x, self.y]
-#     def update(self):
-#         self.rect.move_ip(0, self.speed)
-#         if self.rect.left > 600:
-#             self.kill()
 
 class Blood(pygame.sprite.Sprite):
     def __init__(self, image, center, size):
@@ -200,10 +188,10 @@ def newMonster():
 
 def show_go_screen():
     screen.blit(background, background_rect)
-    draw_text(screen, "Wizard in the woods", 80, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4)
-    draw_text(screen, "WASD to move, hold SPACE to fire.", 50,
+    draw_text(title_font, screen, "Wizard in the woods", 150, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4)
+    draw_text(font_name, screen, "WASD to move, hold SPACE to fire.", 80,
               SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    draw_text(screen, "--Press any key to start--", 25, SCREEN_WIDTH/ 2, SCREEN_HEIGHT * 3 / 4)
+    draw_text(font_name, screen, "--Press any key to start--", 45, SCREEN_WIDTH/ 2, SCREEN_HEIGHT * 3 / 4)
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -214,6 +202,28 @@ def show_go_screen():
             if event.type == pygame.KEYUP:
                 waiting = False
 
+def game_over_screen():
+    screen.blit(game_over_background, game_over_background_rect)
+    draw_text(title_font, screen, "GAME OVER", 150, SCREEN_WIDTH / 2, 70)
+    draw_text(font_name, screen, "Your Score is: {}".format(score), 150, SCREEN_WIDTH / 2, 60)
+    draw_text(font_name, screen, "Press SPACE to play again. ESC to exit.", 45, SCREEN_WIDTH/ 2, SCREEN_HEIGHT - 100)
+    waiting = True
+    pygame.display.flip()
+    pressed_keys = pygame.key.get_pressed()
+    while waiting:
+        clock.tick(FPS)
+        pressed_keys = pygame.key.get_pressed()
+        pos = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                if event.key == K_SPACE:
+                    start_screen = True
+                    waiting = False
+
+
+
 
 player = Char(hero_image)
 enemy_sprites = pygame.sprite.Group()
@@ -222,26 +232,35 @@ shot = pygame.sprite.groupcollide(enemy_sprites, bullets, True, True)
 blood_group = pygame.sprite.Group()
 sprites.add(player)
 shots_out = []
+score_doubled = 30
+score = 0
+
+
 def redrawGameWindow():
+    health_print = font_name.render('Health: {}'.format(player.life), True, BLACK)
+    score_print = font_name.render( 'Score: {}'.format(score), True, BLACK)
     screen.blit(game_background, (0,0))
     sprites.draw(screen)
     bullets.draw(screen)
     bullets.update()
     blood_group.update()
     enemy_sprites.update()
-    pygame.display.update()
     player.update(pressed_keys, pos)
+    screen.blit(health_print, (25, 525))
+    screen.blit(score_print, (25, 550))
+    pygame.display.update()
 # pygame.mixer.music.load()
 # pygame.mixer.music.play(-1)
-level = 1
-difficulty = 1
-score = 0
-counter = 12
+# level = 1
+difficulty = 7
+
 running = True
 start_screen = True
+game_over = False
 while running:
     pressed_keys = pygame.key.get_pressed()
     pos = pygame.mouse.get_pos()
+   
     if start_screen:
         show_go_screen()
         start_screen = False
@@ -251,7 +270,21 @@ while running:
         player = Char(hero_image)
         sprites.add(player)
         score = 0
+
+    if game_over:
+        game_over_screen()
+        game_over = False
+        sprites = pygame.sprite.Group()
+        enemy_sprites = pygame.sprite.Group()
+        bullets = pygame.sprite.Group()
+        player = Char(hero_image)
+        sprites.add(player)
+        score = 0
     
+
+
+
+
     clock.tick(60)
     for event in pygame.event.get():
         pressed_keys = pygame.key.get_pressed()
@@ -264,7 +297,6 @@ while running:
 
     hits = pygame.sprite.groupcollide(enemy_sprites, bullets, True, True)
     for hit in hits:
-        counter = counter + 1
         score += 1
         random_roll = random.randint(1, 6)
         if random_roll > 3:
@@ -281,19 +313,24 @@ while running:
         newMonster()
         player.life -= 1
         if player.life == 0:
-            start_screen = True
+            # start_screen = True
+            game_over = True
+            player.life = 5
+            
 
-    random_roll = random.randint(1, 7)
-    if random_roll <= difficulty:
+    random_roll = random.randint(1, difficulty)
+    if random_roll == 1:
         newMonster()      
     
-    
 
-    screen.fill((75, 22, 75))
+    if score >= score_doubled:
+        score_doubled *= 2
+        difficulty -= 1
+        player.shoot_delay -= 26
 
-    
 
-    # counter += 1
+
+
     redrawGameWindow()
     pygame.display.flip()
     
