@@ -77,7 +77,7 @@ class Bullet(pygame.sprite.Sprite):
         self.image = pygame.Surface((10, 20))
         self.image = shot_image
         self.rect = self.image.get_rect()
-        self.radius = 9
+        self.radius = 5
         self.rect.bottom = y
         self.rect.centerx = x
         self.speedy = -17
@@ -139,7 +139,7 @@ class Monster(pygame.sprite.Sprite):
         self.speedx = random.randint(-5, 7)
         self.speedy = random.randint(3,7)
         self.x = random.randint(1, 800) 
-        self.y = random.randint(5  , 30)
+        self.y = random.randint(-5  , 30)
         self.rect.center = [self.x, self.y]
 
     def update(self):
@@ -232,7 +232,7 @@ shot = pygame.sprite.groupcollide(enemy_sprites, bullets, True, True)
 blood_group = pygame.sprite.Group()
 sprites.add(player)
 shots_out = []
-score_doubled = 30
+score_doubled = 15
 score = 0
 
 
@@ -249,9 +249,7 @@ def redrawGameWindow():
     screen.blit(health_print, (25, 525))
     screen.blit(score_print, (25, 550))
     pygame.display.update()
-# pygame.mixer.music.load()
-# pygame.mixer.music.play(-1)
-# level = 1
+
 difficulty = 7
 
 running = True
@@ -269,6 +267,8 @@ while running:
         bullets = pygame.sprite.Group()
         player = Char(hero_image)
         sprites.add(player)
+        difficulty = 7
+        score_doubled = 15
         score = 0
 
     if game_over:
@@ -279,6 +279,8 @@ while running:
         bullets = pygame.sprite.Group()
         player = Char(hero_image)
         sprites.add(player)
+        score_doubled = 15
+        difficulty = 7
         score = 0
     
 
@@ -313,19 +315,20 @@ while running:
         newMonster()
         player.life -= 1
         if player.life == 0:
-            # start_screen = True
             game_over = True
             player.life = 5
             
 
     random_roll = random.randint(1, difficulty)
+
     if random_roll == 1:
         newMonster()      
     
 
     if score >= score_doubled:
         score_doubled *= 2
-        difficulty -= 1
+        if difficulty > 1:
+            difficulty -= 1
         player.shoot_delay -= 26
 
 
