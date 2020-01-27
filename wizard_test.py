@@ -98,14 +98,14 @@ class Char(pygame.sprite.Sprite):
         self.speed = 15
         self.x = 400
         self.y = 475
-        self.last_shot = pygame.time.get_ticks()
+        self.last_fire = pygame.time.get_ticks()
         self.life = 5
         self.rect.center = [self.x, self.y]
         self.shoot_delay = 230
     def shoot(self):
         now = pygame.time.get_ticks()
-        if now - self.last_shot > self.shoot_delay:
-            self.last_shot = now
+        if now - self.last_fire > self.shoot_delay:
+            self.last_fire = now
             bullets.add(Bullet(self.rect.centerx, self.rect.top))
         shots_out.append("pew")
     def update(self, pressed_keys, pos):
@@ -217,7 +217,7 @@ def game_over_screen():
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    pygame.quit()
+                    pygame.QUIT()
                 if event.key == K_SPACE:
                     start_screen = True
                     waiting = False
